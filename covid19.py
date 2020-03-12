@@ -24,10 +24,8 @@ import time
 
 
 # you can set cron job for linux like this
-# * * * * * /usr/bin/python3  /home/hawkseye coronavirus.py >/dev/null 2>&1
+# * * * * * /usr/bin/python3  /to/path coronavirus.py >/dev/null 2>&1
 
-
-# https://www.adminschoice.com/crontab-quick-reference
 
 class Coronavirus():
     def __init__(self):
