@@ -17,6 +17,8 @@ from twilio.rest import Client
 import telebot
 from matplotlib.backends.backend_pdf import PdfPages
 import time
+import slack
+
 
 
 
@@ -64,6 +66,9 @@ class Coronavirus():
     #    telegram api token and chat id
        self.bot_token = 'xxxxxxxxxxxxxxxx:xxxxxxxxxxxxxxx-xxxxxxxxxx'
        self.bot_chatID = '654564773'
+    
+     #    slack token
+       self.SLACK_API_TOKEN ='xoxb-xxxxxxxxxxxxxxxxxxx-xxxxxxxxxxxxxxxxxxxxxx-xxxxx'
 
 
     # scrape worldometers
@@ -88,6 +93,7 @@ class Coronavirus():
         # self.sendgrid()
         self.notifyWhatsapp(Tcases,TDeaths,Recovered)
         self.notifyTelegram(Tcases,TDeaths,Recovered)
+        self.notifySlack(Tcases,TDeaths,Recovered)
         self.DelFiles()
 
 
@@ -270,6 +276,29 @@ class Coronavirus():
                             from_=from_whatsapp_number,
                             to='whatsapp:'+num[0])
         print("Whatsapp Notification Sent!")
+        
+        
+      
+    
+     def notifySlack(self,Tcases,TDeaths,Recovered):
+        client = slack.WebClient(token=self.SLACK_API_TOKEN)
+        body=""" Hi,  ℍ𝔼ℝ𝔼 𝕀𝕊 𝕋𝕆𝔻𝔸𝕐𝕊 ℂ𝕆ℝ𝕆ℕ𝔸 𝕍𝕀ℝ𝕌𝕊 𝕌ℙ𝔻𝔸𝕋𝔼 [ ℂ𝕆𝕍𝕀𝔻𝟙𝟡] 👹 
+        𝕿𝖔𝖙𝖆𝖑 𝕮𝖆𝖘𝖊𝖘 : {Tcases} 
+        𝕿𝖔𝖙𝖆𝖑 𝕯𝖊𝖆𝖙𝖍𝖘 : {TDeaths}
+        𝕽𝖊𝖈𝖔𝖛𝖊𝖗𝖊𝖉    : {Recovered}""".format(Tcases=Tcases,TDeaths=TDeaths,Recovered=Recovered)
+
+        response = client.chat_postMessage(
+            channel='#diy-projects',
+            text=body)
+        assert response["ok"]
+
+        for media in self.attachments:
+            resUpload = client.files_upload(
+            channels='#diy-projects',
+            file=media)
+            assert resUpload["ok"]
+        print("Slack Notification Sent!")
+
 
             
         
